@@ -37,7 +37,6 @@ export const todoRouter = router({
         todoId: z.string().cuid(),
         todotitle: z.string(),
         isCompleted: z.boolean(),
-        updatedAt: z.date(),
       })
     )
     .mutation(async ({ input }) => {

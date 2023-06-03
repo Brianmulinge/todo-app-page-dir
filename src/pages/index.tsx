@@ -12,17 +12,18 @@ export default function Home() {
 
   //getTodo
   const todo = trpc.todo.gettodo.useQuery();
+
   //createTodo
   const newtodo = trpc.todo.createtodo.useMutation({
     onSuccess: () => {
       utils.todo.gettodo.invalidate();
+      setTodoTitle("");
+      setIsComplete(false);
     },
   });
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     newtodo.mutate({ todotitle, isCompleted });
-    setTodoTitle("");
-    setIsComplete(false);
   }
 
   //updateTodo
@@ -31,6 +32,7 @@ export default function Home() {
       utils.todo.invalidate();
     },
   });
+
   //deleteTodo
   const { mutate: removetodo } = trpc.todo.deletetodo.useMutation({
     onSuccess: () => {
@@ -43,7 +45,7 @@ export default function Home() {
       <div className="">
         <h1 className="p-4 text-lg font-semibold">Simple Todo App</h1>
         <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-          <Input onChange={(e) => setTodoTitle(e.target.value)} />
+          <Input value={todotitle} onChange={(e) => setTodoTitle(e.target.value)} />
           <Button className="flex whitespace-nowrap">Add todo</Button>
         </form>
       </div>
@@ -65,10 +67,13 @@ export default function Home() {
               </div>
               <div className="flex space-x-4 items-center">
                 <Edit
-                  onClick={() => edittodo({
-                    todotitle, isCompleted,
-                    todoId: ""
-                  })}
+                  onClick={() =>
+                    edittodo({
+                      todotitle,
+                      isCompleted,
+                      todoId: "",
+                    })
+                  }
                   className="hidden cursor-pointer"
                 />
                 <Trash
